@@ -4,7 +4,7 @@ import time
 import os
 
 # Creating & Saving a sample file
-def createSample(data,percent):
+def createSample(data,percent):3
     percent=float(percent/100)
     start=int(len(data) * percent)
     print('starting at %i'%start)
@@ -15,9 +15,12 @@ def createSample(data,percent):
 # Combining all files together
 def combineData(working_dir):
     # Staring Variables
-    file_names=os.listdir(working_dir)
+    try:
+        file_names=os.listdir(working_dir)
+    except:
+        print("Directory not found, Do you have the folder ETFs in your working directory?")
     columns=None
-    with open(working_dir+('/%s'%file_names[0])) as f:
+    with open(working_dir + ('/%s'%file_names[0])) as f:
         columns=f.readline().strip('\n').split(',')
     df_data=pd.DataFrame(columns=columns)
     i=1
@@ -27,11 +30,13 @@ def combineData(working_dir):
     for file in file_names:
         print('%i/%i'%(i,total_files))
         i+=1
-        with open(working_dir+('/%s'%file)) as f:
-            print('staring file: %s'%file)
-            df=pd.read_csv(working_dir + ('/%s' % file))
-            df['Ticker']=pd.Series(['%s'%file.split('.')[0] for i in range(len(df.index))],index=df.index)
-            df_data=df_data.append(df,ignore_index=True)
+        print(file)
+        if(".txt" in file):
+            with open(working_dir+('/%s'%file)) as f:
+                print('staring file: %s'%file)
+                df=pd.read_csv(working_dir + ('/%s' % file))
+                df['Ticker']=pd.Series(['%s'%file.split('.')[0] for i in range(len(df.index))],index=df.index)
+                df_data=df_data.append(df,ignore_index=True)
 
     # Dropping useless Columns
     for col in columns:
@@ -45,7 +50,7 @@ def combineData(working_dir):
     return(df_data)
 
 def main():
-    working_dir='ETFs'
+    working_dir= os.getcwd() + "/ETFs"
     df_complete,df_sample=None,None
     num=0
     while(num!='3'):
@@ -59,10 +64,10 @@ def main():
 
         elif num=='2':
             df_sample=pd.read_csv("Complete.csv")
-            percent=100-int(input('percentage use as samples \n'))
+            percent=100-int(input('percentage of data to use as samples \n'))
             df_sample=createSample(df_sample,percent)
             df_sample.info(verbose=True)
-            print(df_sample.head())
+            print(df_sample.head())git
 
         elif num=='3':
             print('Exiting')

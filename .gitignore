@@ -1,0 +1,13 @@
+#ignore data/extra folders
+/Data
+/ETFs
+/Stocks
+/.ipynb_checkpoints
+
+#ignore generated data
+*.csv
+
+#ingore zipped folders
+*.zip
+
+
